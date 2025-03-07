@@ -1,0 +1,36 @@
+name: Continuous Integration and Deployment
+
+on:
+  push:
+    branches:
+      - main
+      - develop
+  pull_request:
+    branches:
+      - main
+      - develop
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Connect and run script
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          password: ${{ secrets.SSH_PASSWORD }}
+          username: ${{ secrets.SSH_USERNAME }}
+          port: ${{ secrets.SSH_PORT }}
+          script: |
+            cd www/u181705.test-handyhost.ru
+            git reset --hard HEAD  
+            git clean -df
+            git pull origin main
+            cd backend/user
+            /opt/alt/php82/usr/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+            /opt/alt/php82/usr/bin/php composer-setup.php
+            ./composer.phar install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
+            cp .env.example .env
+            /opt/alt/php82/usr/bin/php artisan optimize
+            chmod -R 777 storage bootstrap/cache
+            /opt/alt/php82/usr/bin/php artisan key:generate
