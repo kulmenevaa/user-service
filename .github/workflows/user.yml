@@ -26,6 +26,7 @@ jobs:
             git reset --hard HEAD  
             git clean -df
             git pull origin main
+            cd application
             /opt/alt/php82/usr/bin/php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
             /opt/alt/php82/usr/bin/php composer-setup.php
             ./composer.phar install --prefer-dist --no-ansi --no-interaction --no-progress --no-scripts
