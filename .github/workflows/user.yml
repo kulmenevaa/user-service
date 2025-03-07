@@ -22,7 +22,7 @@ jobs:
           username: ${{ secrets.SSH_USERNAME }}
           port: ${{ secrets.SSH_PORT }}
           script: |
-            cd www/u181705.test-handyhost.ru
+            cd www/u181705.test-handyhost.ru/user-service
             git reset --hard HEAD  
             git clean -df
             git pull origin main
